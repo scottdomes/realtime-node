@@ -21,11 +21,16 @@ class App extends Component {
   }
 
   sendMessage = () => {
-    fetch('http://localhost:8080/messages', { 
-      method: 'POST', 
-      body: {
+    const payload = JSON.stringify({
         message: this.state.newMessage
-      }
+      })
+    fetch('http://localhost:8080/messages', { 
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: payload
     }).then(() => {
       this.loadMessages()
     })
