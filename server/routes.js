@@ -5,13 +5,11 @@ export default function(app, db) {
   });
 
   app.post('/messages', (req, res) => {
-    console.log(req)
     const message = { text: req.body.message };
     db.collection('messages').insert(message, (err, result) => {
       if (err) { 
         res.send({ error: 'An error has occurred' }); 
       } else {
-        console.log(result)
         res.send(result.ops[0]);
       }
     });

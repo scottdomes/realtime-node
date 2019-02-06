@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+
 import './App.css';
 
 class App extends Component {
   state = { messages: [], newMessage: '' }
 
   componentDidMount() {
-    this.loadMessages()
+    const { socket } = this.props
+    socket.on('messages', messages => {
+      this.setState({ messages })
+    })
   }
 
   handleNewMessageChange = e => {
@@ -21,19 +25,21 @@ class App extends Component {
   }
 
   sendMessage = () => {
-    const payload = JSON.stringify({
-        message: this.state.newMessage
-      })
-    fetch('http://localhost:8080/messages', { 
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: payload
-    }).then(() => {
-      this.loadMessages()
-    })
+    // const payload = JSON.stringify({
+    //     message: this.state.newMessage
+    //   })
+    // fetch('http://localhost:8080/messages', { 
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: payload
+    // }).then(() => {
+    //   this.setState({ newMessage: '' })
+    //   this.loadMessages()
+    // })
+    this.props.socket.emit('newMessage', this.state.newMessage)
   }
 
   render() {
@@ -41,7 +47,7 @@ class App extends Component {
     return (
       <div className="App">
         {
-          messages.map(msg => <p key={msg.id}>{msg.text}</p>)
+          messages.map(msg => <p key={msg._id}>{msg.text}</p>)
         }
         <textarea 
           value={newMessage} 
