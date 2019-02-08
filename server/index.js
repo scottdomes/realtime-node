@@ -10,12 +10,14 @@ app.use(bodyParser.json());
 app.use(cors());
 const server = createServer(app);
 
-MongoClient.connect('mongodb://localhost/realtime', (err, database) => {
-  if (err) return console.log(err);
-  const db = database.db('realtime');
+const start = async () => {
+  const client = await MongoClient.connect('mongodb://localhost/realtime');
+  const db = client.db('realtime');
   setUpSockets(server, db);
 
   server.listen(8080, () => {
     console.log('Listening at port', server.address().port);
   });
-});
+};
+
+start();
